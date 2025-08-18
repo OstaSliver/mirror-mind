@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/* บังคับโทนสว่าง เพื่อไม่ให้ธีมมืดมากดทับ */
+:root { color-scheme: light; }
+
+/* Base ที่จำเป็น (ใช้ @apply ของ Tailwind) */
+@layer base {
+  html, body, #root { height: 100%; }
+
+  body {
+    @apply bg-gradient-to-b from-slate-50 to-white text-slate-800;
+    margin: 0;
+  }
+}
+
+/* ไม่ต้องมีสไตล์ปุ่ม/ลิงก์ทั่วโลก ปล่อยให้คอมโพเนนต์จัดการเอง */

@@ -15,7 +15,7 @@ export default function Login({ onNext }: { onNext: () => void }) {
           <LabeledInput id="username" label="ชื่อผู้ใช้" placeholder="yourname" />
           <LabeledInput id="password" type="password" label="รหัสผ่าน" placeholder="••••••••" />
           <div className="flex items-center justify-between text-sm mt-2">
-            <a className="text-slate-500 hover:underline" href="#">ยังไม่ได้เป็นสมาชิก? ลงทะเบียน</a>
+            <a className="text-slate-500 hover:underline" href="/register">ยังไม่ได้เป็นสมาชิก? ลงทะเบียน</a>
             <label className="inline-flex items-center gap-2">
               <input type="checkbox" className="size-4" /> จดจำฉัน
             </label>

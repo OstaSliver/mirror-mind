@@ -22,3 +22,33 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# --- Virtualenv ---
+.venv/
+venv/
+env/
+**/site-packages/
+
+# --- Python cache/compiled ---
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.dll
+
+# --- Packages/Build artifacts ---
+build/
+dist/
+*.egg-info/
+
+# --- Env/Secrets ---
+.env
+.env.*
+
+# --- IDE/OS junk ---
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+

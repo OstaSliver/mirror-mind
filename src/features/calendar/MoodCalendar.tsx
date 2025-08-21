@@ -182,8 +182,8 @@ const sameDay = (a: Date, b: Date) =>
   a.getDate() === b.getDate();
 
 // ---- ตั้งค่าผู้ใช้สำหรับ header (ภายหลังค่อยต่อ auth จริง) ----
-const USER_ID = "demo0";
-const apiHeaders = { "X-User-Id": USER_ID };
+// const USER_ID = "demo0";
+// const apiHeaders = { "X-User-Id": USER_ID };
 
 export default function MoodCalendar({
   onOpenChat, onOpenQ11
@@ -205,34 +205,53 @@ export default function MoodCalendar({
   }, [year, monthIdx]);
 
   // โหลด moods ของเดือนที่แสดงอยู่ (MVP: ยิงทีละวัน)
+  // useEffect(() => {
+  //   const load = async () => {
+  //     setLoadingMonth(true);
+  //     try {
+  //       const inMonthDates = cells.filter(c => c.inMonth).map(c => c.date);
+  //       const results = await Promise.allSettled(
+  //         inMonthDates.map(d =>
+  //           axios.get<{ date: string; level: number | null }>("/api/moods", {
+  //             headers: apiHeaders,
+  //             params: { date: keyOf(d) }
+  //           })
+  //         )
+  //       );
+  //       const next: Record<string, number> = {};
+  //       results.forEach(r => {
+  //         if (r.status === "fulfilled") {
+  //           const { date, level } = r.value.data;
+  //           if (level !== null && level !== undefined) next[date] = level;
+  //         }
+  //       });
+  //       setMoodMap(next);
+  //     } finally {
+  //       setLoadingMonth(false);
+  //     }
+  //   };
+  //   load();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [year, monthIdx]);
+
   useEffect(() => {
-    const load = async () => {
-      setLoadingMonth(true);
-      try {
-        const inMonthDates = cells.filter(c => c.inMonth).map(c => c.date);
-        const results = await Promise.allSettled(
-          inMonthDates.map(d =>
-            axios.get<{ date: string; level: number | null }>("/api/moods", {
-              headers: apiHeaders,
-              params: { date: keyOf(d) }
-            })
-          )
-        );
-        const next: Record<string, number> = {};
-        results.forEach(r => {
-          if (r.status === "fulfilled") {
-            const { date, level } = r.value.data;
-            if (level !== null && level !== undefined) next[date] = level;
-          }
-        });
-        setMoodMap(next);
-      } finally {
-        setLoadingMonth(false);
-      }
-    };
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [year, monthIdx]);
+  let ok = true;
+  const load = async () => {
+    setLoadingMonth(true);
+    try {
+      const res = await axios.get("/api/moods/month", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        params: { year, month: monthIdx + 1 },
+      });
+      if (!ok) return;
+      setMoodMap(res.data?.data ?? {});   // { "YYYY-MM-DD": level }
+    } finally {
+      if (ok) setLoadingMonth(false);
+    }
+  };
+  load();
+  return () => { ok = false };
+}, [year, monthIdx]);
 
   // บันทึกได้เฉพาะ "วันนี้"
   const setMoodForSelected = useCallback(async (level: number) => {
@@ -244,7 +263,7 @@ export default function MoodCalendar({
     setOpenPicker(false);
 
     try {
-      await axios.put("/api/moods", { date: dateKey, level }, { headers: apiHeaders });
+      await axios.put("/api/moods", { date: dateKey, level }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
     } catch {
       // rollback ถ้าพลาด
       setMoodMap((s) => {

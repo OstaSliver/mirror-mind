@@ -14,7 +14,7 @@ export default function MainLayout() {
               <div className="text-xs text-slate-500">กระจกสะท้อนอารมณ์</div>
             </div>
           </div>
-          <Button variant="outline" onClick={() => nav("/calendar")}>หน้าแรก</Button>
+          <Button variant="outline" onClick={() => nav("/home")}>หน้าแรก</Button>
         </div>
         <Outlet />
       </div>

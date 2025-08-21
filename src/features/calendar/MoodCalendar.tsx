@@ -159,11 +159,13 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { api } from "../../lib/api";
 import { Calendar as CalIcon, ChevronLeft, ChevronRight, MessageCircleHeart } from "lucide-react";
 import { Card, CardHeader } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { IconButton } from "../../components/ui/IconButton";
 import { useCalendar, keyOf } from "./useCalendar";
+import { a } from "framer-motion/client";
 
 const moods = [
   { key: 0, label: "อารมณ์ปกติ มีความสุข สดใส สบายใจ", color: "bg-emerald-500" },
@@ -239,7 +241,7 @@ export default function MoodCalendar({
   const load = async () => {
     setLoadingMonth(true);
     try {
-      const res = await axios.get("/api/moods/month", {
+      const res = await api.get("/api/moods/month", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         params: { year, month: monthIdx + 1 },
       });
@@ -263,7 +265,7 @@ export default function MoodCalendar({
     setOpenPicker(false);
 
     try {
-      await axios.put("/api/moods", { date: dateKey, level }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+      await api.put("/api/moods", { date: dateKey, level }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
     } catch {
       // rollback ถ้าพลาด
       setMoodMap((s) => {

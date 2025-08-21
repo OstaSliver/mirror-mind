@@ -156,6 +156,9 @@ import MoodCalendar from "./features/calendar/MoodCalendar";
 import EncourageChat from "./features/chat/EncourageChat";
 import Q11Part1 from "./features/assess/Q11Part1";
 import Q11Result from "./features/assess/Q11Result";
+import Home from "./features/home/Home";
+import RequireAuth from "./routes/RequireAuth";
+
 import { Camera } from "lucide-react";
 import { Card, CardHeader } from "./components/ui/Card";
 import { Button } from "./components/ui/Button";
@@ -190,7 +193,7 @@ function AnimatedRoutes() {
           <Route path="scan" element={
             <Page><Card>
               <CardHeader title={<div className="flex items-center gap-2"><Camera className="size-5" />สแกนใบหน้าเพื่อประเมินอารมณ์เศร้า</div>}
-                          description="หมายเหตุ: ใช้เพื่อเป็นแนวทางเบื้องต้น ไม่ใช่การวินิจฉัยทางการแพทย์" />
+                description="หมายเหตุ: ใช้เพื่อเป็นแนวทางเบื้องต้น ไม่ใช่การวินิจฉัยทางการแพทย์" />
               <div className="p-6">
                 <div className="rounded-3xl border aspect-video grid place-items-center"><div className="text-slate-400">กล้องพรีวิว</div></div>
                 <div className="mt-4 flex gap-3">
@@ -199,13 +202,16 @@ function AnimatedRoutes() {
                 </div>
               </div>
             </Card></Page>} />
+          <Route element={<RequireAuth />}>
+            <Route path="calendar" element={
+              <Page><MoodCalendar onOpenChat={() => nav("/chat")} onOpenQ11={() => nav("/q11")} /></Page>} />
+            <Route path="chat" element={<Page><EncourageChat onBack={() => nav("/calendar")} /></Page>} />
+            <Route path="q11" element={<Page><Q11Part1 onNext={() => nav("/q11/result")} onCancel={() => nav("/calendar")} /></Page>} />
+            <Route path="q11/result" element={<Page><Q11Result onDone={() => nav("/calendar")} /></Page>} />
+            <Route path="home" element={<Page><Home /></Page>} />
+          </Route>
 
-          <Route path="calendar" element={
-            <Page><MoodCalendar onOpenChat={() => nav("/chat")} onOpenQ11={() => nav("/q11")} /></Page>} />
-          <Route path="chat" element={<Page><EncourageChat onBack={() => nav("/calendar")} /></Page>} />
-          <Route path="q11" element={<Page><Q11Part1 onNext={() => nav("/q11/result")} onCancel={() => nav("/calendar")} /></Page>} />
-          <Route path="q11/result" element={<Page><Q11Result onDone={() => nav("/calendar")} /></Page>} />
-
+          {/* Catch-all route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
